@@ -1,0 +1,90 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Загрузка датасета
+df = pd.read_csv("HousingData.csv")
+
+print("Первые строки:")
+print(df.head())
+
+# Исскуственное создание пропусков
+df.loc[df.sample(frac=0.1).index, "RM"] = np.nan
+df.loc[df.sample(frac=0.1).index, "LSTAT"] = np.nan
+
+print("\nПропуски:")
+print(df.isnull().sum())
+
+# Удаление пропусков
+
+df = df.dropna()
+
+print("\nПосле удаления пропусков:")
+print(df.isnull().sum())
+
+# Создание категориального признака
+
+df["PriceCategory"] = pd.cut(
+    df["MEDV"],
+    bins=[0, 20, 35, 100],
+    labels=["Low", "Medium", "High"]
+)
+
+print("\nДанные с новым признаком:")
+print(df.head())
+
+
+# Основные характеристики
+
+print("\nРазмер датасета:", df.shape)
+print("\nИнформация:")
+print(df.info())
+print("\nСтатистика:")
+print(df.describe())
+
+# Визуализация данных
+# Гистограммы
+df.hist(figsize=(12, 10))
+plt.suptitle("Гистограммы признаков")
+plt.show()
+
+# Boxplot
+plt.figure(figsize=(10, 6))
+sns.boxplot(data=df)
+plt.title("Boxplot признаков")
+plt.show()
+
+# Диаграмма рассеяния 
+sns.scatterplot(x="RM", y="MEDV", data=df)
+plt.title("Зависимость цены от количества комнат")
+plt.show()
+
+# Корреляция
+corr = df.corr(numeric_only=True)
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(corr, annot=True, cmap="coolwarm")
+plt.title("Матрица корреляции")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
